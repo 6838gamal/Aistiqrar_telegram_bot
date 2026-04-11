@@ -7,7 +7,7 @@ from app.bot.bot import bot
 from app.bot.dispatcher import dp
 
 # 🔥 مهم: استيراد نظام المينيو الجديد
-from app.bot.handlers.main_menu import setup_menu_routers
+from app.bot.handlers.menu import setup_menu_routers
 
 app = FastAPI()
 
