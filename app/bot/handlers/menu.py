@@ -1,21 +1,26 @@
 from aiogram import Router, types
+from app.utils.commands import match_command
 
 router = Router()
 
 @router.message()
 async def menu(message: types.Message):
+    cmd = match_command(message.text)
 
-    if "📁" in message.text:
+    if not cmd:
+        return
+
+    if cmd == "profile":
         await message.answer("👤 ملفك قيد التطوير")
 
-    elif "🧭" in message.text:
+    elif cmd == "categories":
         await message.answer("🎨 تصميم\n💻 برمجة\n✍️ كتابة")
 
-    elif "💡" in message.text:
-        await message.answer("اكتب اقتراحك")
+    elif cmd == "suggest":
+        await message.answer("💡 اكتب اقتراحك")
 
-    elif "👥" in message.text:
-        await message.answer("رابط الدعوة قريبًا")
+    elif cmd == "invite":
+        await message.answer("👥 شارك البوت مع أصدقائك")
 
-    elif "❓" in message.text:
-        await message.answer("ابدأ بـ 🚀")
+    elif cmd == "help":
+        await message.answer("❓ اكتب job أو اختر من القائمة")
