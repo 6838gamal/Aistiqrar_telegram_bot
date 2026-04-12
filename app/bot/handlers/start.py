@@ -1,19 +1,19 @@
 from aiogram import Router, types
 from app.database.storage import set_user
-from app.keyboards.main_menu import main_menu
+from app.keyboards.main_menu import home_menu
 
 router = Router()
 
-@router.message(lambda m: m.text == "/start")
-async def start(message: types.Message):
-    await message.answer("🇸🇦 عربي / 🇺🇸 English")
+@router.message(lambda m: m.text and "start" in m.text.lower())
+async def start_handler(message: types.Message):
+    user_id = message.from_user.id
 
-@router.message(lambda m: m.text in ["🇸🇦 عربي", "🇺🇸 English"])
-async def set_lang(message: types.Message):
-    lang = "ar" if "عربي" in message.text else "en"
-    set_user(message.from_user.id, lang)
+    # حفظ المستخدم
+    set_user(user_id, "ar")
 
     await message.answer(
-        "✅ Done",
-        reply_markup=main_menu(lang)
+        "👋 أهلاً بك في منصة استقرار\n\n"
+        "💼 سنساعدك في إيجاد فرص عمل حقيقية\n"
+        "🚀 ابدأ الآن من القائمة بالأسفل",
+        reply_markup=home_menu("ar")
     )
