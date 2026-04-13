@@ -9,8 +9,11 @@ COMMANDS = {
     "invite":     ["invite", "دعوة", "👥"],
     "help":       ["help", "مساعدة", "❓"],
     "channels":   ["channels", "قنواتنا", "📡"],
-    "settings":   ["settings", "إعدادات"],
+    "settings":   ["settings", "إعدادات", "⚙️"],
     "back":       ["back", "رجوع", "🔙"],
+    "favorites":  ["favorites", "المفضلة", "مفضلة", "⭐"],
+    "about":      ["about", "عن المطور", "عنا", "👤"],
+    "contact":    ["contact", "تواصل", "تواصل معنا", "📞"],
 }
 
 def match_command(text: str):

@@ -6,6 +6,9 @@ from .suggest import router as suggest_router
 from .invite import router as invite_router
 from .help import router as help_router
 from .lang import router as lang_router
+from .favorites import router as favorites_router
+from .about import router as about_router
+from .contact import router as contact_router
 
 
 def setup_menu_routers(dp):
@@ -17,3 +20,6 @@ def setup_menu_routers(dp):
     dp.include_router(suggest_router)
     dp.include_router(invite_router)
     dp.include_router(help_router)
+    dp.include_router(favorites_router)
+    dp.include_router(about_router)
+    dp.include_router(contact_router)

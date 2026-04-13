@@ -9,6 +9,9 @@
   "menu_channels": "📡 Our Channels",
   "menu_settings": "⚙️ Settings",
   "menu_back": "🔙 Back",
+  "menu_favorites": "⭐ Favorites",
+  "menu_about": "👤 About Developer",
+  "menu_contact": "📞 Contact Us",
 
   "start_work": "🔥 Work session started\nFocus for 25 minutes",
   "job_title": "💼 Today's Job:",
@@ -37,16 +40,16 @@
   "cat_saved": "✅ Selections saved!",
   "cat_none_selected": "⚠️ You haven't selected any field yet!",
   "cat_jobs_header": "🎯 Available opportunities in your fields:",
-  "cat_no_jobs": "⚠️ No opportunities available in the selected fields right now.\nMore will be added soon!",
+  "cat_no_jobs": "⚠️ No opportunities available right now.\nMore will be added soon!",
 
   "job_counter": "🔢 {current} / {total}",
-  "feed_starting": "🚀 Loading opportunities... they will start arriving one by one!",
-  "feed_completed": "✅ All available opportunities in your fields have been shown!\n\nChange your category selections to explore other fields.",
+  "feed_starting": "🚀 Loading projects and starting continuous monitoring...",
+  "feed_completed": "✅ All available opportunities have been shown!\n\nChange your category selections to explore other fields.",
   "subscription_required": "⏰ Your free trial has ended (72 hours)\n\nTo continue accessing opportunities and projects, please subscribe to the platform.\n\n📩 Contact us to subscribe and get more opportunities 🚀",
 
   "suggest_text": "💡 Suggestions\n\nWe value your feedback!\nWrite your suggestion in the next message and we'll receive it directly 📩",
 
   "invite_text": "👥 Your Referral Link\n\nShare this link with your friends — everyone who joins through it gets registered under your name 🎁\n\n🔗 Your personal link:\n{link}",
 
-  "help_text": "❓ Help & Support\n\n💼 Today's Job\n📁 My Profile & Referrals\n🧭 Job Categories\n👥 Your Referral Link\n📡 Our Channels\n⚙️ Settings\n💡 Suggestion\n🚀 Focus Session\n\n📩 For support: contact admin"
+  "help_text": "❓ Help & Support\n\n💼 Today's Job — Latest projects\n📁 My Profile & Referrals\n🧭 Categories — Start continuous monitoring\n⭐ Favorites — Your saved projects\n👥 Your Referral Link\n📡 Our Channels\n⚙️ Settings\n💡 Suggestion\n👤 About Developer\n📞 Contact Us\n🚀 Focus Session\n\n📩 For support: contact us directly"
 }

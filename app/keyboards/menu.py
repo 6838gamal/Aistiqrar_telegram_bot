@@ -8,10 +8,12 @@ from app.utils.translator import translator
 def home_menu(lang="ar"):
     t = lambda key: translator.t(key, lang)
     keyboard = [
-        [KeyboardButton(text=t("menu_job")),       KeyboardButton(text=t("menu_profile"))],
+        [KeyboardButton(text=t("menu_job")),        KeyboardButton(text=t("menu_profile"))],
         [KeyboardButton(text=t("menu_categories")), KeyboardButton(text=t("menu_invite"))],
+        [KeyboardButton(text=t("menu_favorites")),  KeyboardButton(text=t("menu_contact"))],
         [KeyboardButton(text=t("menu_channels")),   KeyboardButton(text=t("menu_settings"))],
         [KeyboardButton(text=t("menu_suggest")),    KeyboardButton(text=t("menu_help"))],
+        [KeyboardButton(text=t("menu_about"))],
         [KeyboardButton(text=t("menu_start"))],
     ]
     return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
