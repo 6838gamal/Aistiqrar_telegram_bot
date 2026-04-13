@@ -1,6 +1,7 @@
 import asyncio
+import hashlib
 from aiogram import Router, F, Bot
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime, timedelta
 from app.database.db import (
     get_user, get_selected_categories, update_selected_categories,
@@ -8,14 +9,14 @@ from app.database.db import (
 )
 from app.keyboards.menu import home_menu
 from app.keyboards.categories import categories_keyboard
-from app.services.job_service import generate_jobs_by_categories
+from app.services.scraper import fetch_projects, filter_by_categories
 from app.utils.translator import translator
 from app.data.categories import CATEGORIES
 
 router = Router()
 
 TRIAL_HOURS = 72
-SEND_DELAY = 0.07
+SEND_DELAY  = 0.5
 
 
 def _is_trial_expired(feed_started_at: str) -> bool:
@@ -25,41 +26,73 @@ def _is_trial_expired(feed_started_at: str) -> bool:
     return datetime.now() - started > timedelta(hours=TRIAL_HOURS)
 
 
-def _format_job(job: dict, lang: str, seq: int, total: int) -> str:
-    cats = CATEGORIES.get(lang, CATEGORIES["ar"])
-    cat_idx = job.get("category")
-    cat_label = ""
-    if cat_idx is not None and cat_idx < len(cats):
-        emoji, name = cats[cat_idx]
-        cat_label = f"{emoji} {name}"
+def _project_keyboard(link: str, lang: str) -> InlineKeyboardMarkup:
+    fav_id = hashlib.md5(link.encode()).hexdigest()[:16]
+    if lang == "ar":
+        btn_open    = "🔗 الذهاب إلى المشروع"
+        btn_propose = "✍️ كتابة عرض"
+        btn_fav     = "⭐ إضافة إلى المفضلة"
+    else:
+        btn_open    = "🔗 Open Project"
+        btn_propose = "✍️ Write Proposal"
+        btn_fav     = "⭐ Add to Favorites"
 
-    title = job["title_ar"] if lang == "ar" else job["title_en"]
-    platform = job["platform_ar"] if lang == "ar" else job["platform_en"]
-    counter = translator.t("job_counter", lang).format(current=seq, total=total)
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(text=btn_open,    url=link),
+            InlineKeyboardButton(text=btn_propose, url=link),
+        ],
+        [
+            InlineKeyboardButton(
+                text=btn_fav,
+                callback_data=f"fav:{fav_id}:{link[:80]}"
+            ),
+        ],
+    ])
 
-    return (
-        f"{counter}\n"
-        f"{'─' * 22}\n"
-        f"🏷️ {cat_label}\n\n"
-        f"📌 {title}\n"
-        f"💰 {job['price']}\n"
-        f"🌐 {platform}\n\n"
-        f"✅ {translator.t('verified', lang)}"
-    )
+
+def _format_project(p: dict, lang: str, seq: int, total: int) -> str:
+    title    = p.get("title", "—")
+    brief    = p.get("brief", "—")
+    time_rel = p.get("time", "—").strip()
+    counter  = translator.t("job_counter", lang).format(current=seq, total=total)
+
+    if lang == "ar":
+        return (
+            f"{counter}\n"
+            f"{'─' * 22}\n"
+            f"🚀 *مشروع جديد*\n\n"
+            f"📌 *{title}*\n"
+            f"⏰ النشر: {time_rel}\n\n"
+            f"📝 *الوصف:*\n{brief}"
+        )
+    else:
+        return (
+            f"{counter}\n"
+            f"{'─' * 22}\n"
+            f"🚀 *New Project*\n\n"
+            f"📌 *{title}*\n"
+            f"⏰ Posted: {time_rel}\n\n"
+            f"📝 *Description:*\n{brief}"
+        )
 
 
-async def _auto_send_jobs(bot: Bot, user_id: int, lang: str, jobs: list, feed_started: str):
-    total = len(jobs)
-    for i, job in enumerate(jobs):
-        if i % 50 == 0 and _is_trial_expired(feed_started):
+async def _auto_send_projects(
+    bot: Bot, user_id: int, lang: str,
+    projects: list, feed_started: str
+):
+    total = len(projects)
+    for i, project in enumerate(projects):
+        if _is_trial_expired(feed_started):
             await bot.send_message(
                 user_id,
                 translator.t("subscription_required", lang)
             )
             return
 
-        text = _format_job(job, lang, i + 1, total)
-        await bot.send_message(user_id, text)
+        text = _format_project(project, lang, i + 1, total)
+        kb   = _project_keyboard(project["link"], lang)
+        await bot.send_message(user_id, text, reply_markup=kb, parse_mode="Markdown")
         await asyncio.sleep(SEND_DELAY)
 
     await bot.send_message(
@@ -138,7 +171,14 @@ async def save_categories(call: CallbackQuery):
         reply_markup=home_menu(lang)
     )
 
-    jobs = generate_jobs_by_categories(selected, per_category=1000)
+    all_projects     = fetch_projects()
+    matched_projects = filter_by_categories(all_projects, selected)
+
+    if not matched_projects:
+        no_jobs_msg = translator.t("cat_no_jobs", lang)
+        await call.message.answer(no_jobs_msg)
+        return
+
     asyncio.create_task(
-        _auto_send_jobs(call.bot, call.from_user.id, lang, jobs, feed_started)
+        _auto_send_projects(call.bot, call.from_user.id, lang, matched_projects, feed_started)
     )
