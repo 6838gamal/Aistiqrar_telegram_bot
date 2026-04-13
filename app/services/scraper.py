@@ -1,3 +1,4 @@
+import re
 import requests
 from bs4 import BeautifulSoup
 
@@ -69,7 +70,10 @@ def fetch_projects() -> list[dict]:
         link = card.get("data-link", "").strip()
 
         if title and link:
+            match = re.search(r'/project/(\d+)', link)
+            project_id = match.group(1) if match else ""
             projects.append({
+                "id": project_id,
                 "title": title,
                 "brief": brief,
                 "time": time_rel,

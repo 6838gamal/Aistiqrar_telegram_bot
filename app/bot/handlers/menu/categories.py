@@ -1,5 +1,4 @@
 import asyncio
-import hashlib
 from aiogram import Router, F, Bot
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime, timedelta
@@ -26,8 +25,9 @@ def _is_trial_expired(feed_started_at: str) -> bool:
     return datetime.now() - started > timedelta(hours=TRIAL_HOURS)
 
 
-def _project_keyboard(link: str, lang: str) -> InlineKeyboardMarkup:
-    fav_id = hashlib.md5(link.encode()).hexdigest()[:16]
+def _project_keyboard(project: dict, lang: str) -> InlineKeyboardMarkup:
+    link = project["link"]
+    pid  = project.get("id") or link.split("/")[-1][:20]
     if lang == "ar":
         btn_open    = "🔗 الذهاب إلى المشروع"
         btn_propose = "✍️ كتابة عرض"
@@ -43,10 +43,7 @@ def _project_keyboard(link: str, lang: str) -> InlineKeyboardMarkup:
             InlineKeyboardButton(text=btn_propose, url=link),
         ],
         [
-            InlineKeyboardButton(
-                text=btn_fav,
-                callback_data=f"fav:{fav_id}:{link[:80]}"
-            ),
+            InlineKeyboardButton(text=btn_fav, callback_data=f"fav:{pid}"),
         ],
     ])
 
@@ -91,7 +88,7 @@ async def _auto_send_projects(
             return
 
         text = _format_project(project, lang, i + 1, total)
-        kb   = _project_keyboard(project["link"], lang)
+        kb   = _project_keyboard(project, lang)
         await bot.send_message(user_id, text, reply_markup=kb, parse_mode="Markdown")
         await asyncio.sleep(SEND_DELAY)
 

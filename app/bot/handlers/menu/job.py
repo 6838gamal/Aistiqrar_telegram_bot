@@ -1,4 +1,3 @@
-import hashlib
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, Message
 from app.database.db import get_user, add_favorite
@@ -8,8 +7,9 @@ from app.utils.translator import translator
 router = Router()
 
 
-def _project_keyboard(link: str, title: str, lang: str) -> InlineKeyboardMarkup:
-    fav_id = hashlib.md5(link.encode()).hexdigest()[:16]
+def _project_keyboard(project: dict, lang: str) -> InlineKeyboardMarkup:
+    link = project["link"]
+    pid  = project.get("id") or link.split("/")[-1][:20]
     if lang == "ar":
         btn_open    = "🔗 الذهاب إلى المشروع"
         btn_propose = "✍️ كتابة عرض"
@@ -25,10 +25,7 @@ def _project_keyboard(link: str, title: str, lang: str) -> InlineKeyboardMarkup:
             InlineKeyboardButton(text=btn_propose, url=link),
         ],
         [
-            InlineKeyboardButton(
-                text=btn_fav,
-                callback_data=f"fav:{fav_id}:{link[:80]}"
-            ),
+            InlineKeyboardButton(text=btn_fav, callback_data=f"fav:{pid}"),
         ],
     ])
 
@@ -72,7 +69,7 @@ async def page_job(call: CallbackQuery):
 
     for p in projects:
         text = _format_project(p, lang)
-        kb   = _project_keyboard(p["link"], p["title"], lang)
+        kb   = _project_keyboard(p, lang)
         await call.message.answer(text, reply_markup=kb, parse_mode="Markdown")
 
     await call.answer()
@@ -83,18 +80,20 @@ async def save_favorite(call: CallbackQuery):
     user = get_user(call.from_user.id)
     lang = user.get("lang", "ar")
 
-    parts = call.data.split(":", 2)
-    link  = parts[2] if len(parts) == 3 else ""
-
+    pid      = call.data.split(":", 1)[1]
     projects = fetch_projects()
-    project  = next((p for p in projects if p["link"].startswith(link)), None)
-    title    = project["title"] if project else "—"
+    project  = next((p for p in projects if p.get("id") == pid), None)
 
-    added = add_favorite(call.from_user.id, title, project["link"] if project else link)
+    if not project:
+        msg = "⚠️ لم يُعثر على المشروع." if lang == "ar" else "⚠️ Project not found."
+        await call.answer(msg, show_alert=True)
+        return
+
+    added = add_favorite(call.from_user.id, project["title"], project["link"])
 
     if added:
-        msg = f"⭐ تمت الإضافة إلى المفضلة:\n📌 {title}" if lang == "ar" \
-              else f"⭐ Added to favorites:\n📌 {title}"
+        msg = f"⭐ تمت الإضافة إلى المفضلة:\n📌 {project['title']}" if lang == "ar" \
+              else f"⭐ Added to favorites:\n📌 {project['title']}"
     else:
         msg = "✅ هذا المشروع موجود بالفعل في مفضلتك." if lang == "ar" \
               else "✅ This project is already in your favorites."
