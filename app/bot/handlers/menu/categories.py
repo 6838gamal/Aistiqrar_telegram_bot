@@ -171,14 +171,12 @@ async def save_categories(call: CallbackQuery):
         reply_markup=home_menu(lang)
     )
 
-    all_projects     = fetch_projects()
-    matched_projects = filter_by_categories(all_projects, selected)
+    all_projects = fetch_projects()
 
-    if not matched_projects:
-        no_jobs_msg = translator.t("cat_no_jobs", lang)
-        await call.message.answer(no_jobs_msg)
+    if not all_projects:
+        await call.message.answer(translator.t("cat_no_jobs", lang))
         return
 
     asyncio.create_task(
-        _auto_send_projects(call.bot, call.from_user.id, lang, matched_projects, feed_started)
+        _auto_send_projects(call.bot, call.from_user.id, lang, all_projects, feed_started)
     )
