@@ -1,37 +1,65 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from app.database.db import get_user
 from app.keyboards.menu import back_button
-from app.utils.translator import translator
+from app.utils.formatting import SEP, SEP2
 
 router = Router()
 
 ABOUT_AR = (
-    "👤 *عن المطور*\n\n"
-    "مرحباً! أنا المطور خلف منصة *استقرار* 👋\n\n"
+    f"{SEP}\n"
+    "⚡ *منصة استقرار*\n"
+    f"{SEP}\n\n"
+    "👤 *عن المطور:*\n"
+    f"{SEP2}\n"
+    "مطور متخصص في بناء أدوات ذكية تخدم المستقلين العرب وتوفر لهم الوقت والجهد.\n\n"
+    f"{SEP}\n\n"
     "🎯 *الهدف:*\n"
-    "مساعدة المستقلين العرب في إيجاد فرص عمل حقيقية وبشكل تلقائي ومباشر.\n\n"
+    f"{SEP2}\n"
+    "مساعدة المستقلين العرب في إيجاد فرص عمل حقيقية، بشكل تلقائي ومباشر على هواتفهم — دون عناء البحث اليدوي.\n\n"
+    f"{SEP}\n\n"
     "🛠️ *التقنيات المستخدمة:*\n"
+    f"{SEP2}\n"
     "• Python & Aiogram v3\n"
     "• FastAPI & SQLite\n"
-    "• Web Scraping & Real-time Monitoring\n\n"
+    "• Web Scraping & Real-time Monitoring\n"
+    "• Async Task Management\n\n"
+    f"{SEP}\n\n"
     "💡 *الرؤية:*\n"
-    "بناء أداة ذكية تجمع فرص العمل الحر وتوصلها للمستقل مباشرة على هاتفه.\n\n"
-    "📬 للتواصل أو الاستفسار، استخدم قسم *تواصل معنا*."
+    f"{SEP2}\n"
+    "بناء منظومة ذكية متكاملة تجمع فرص العمل الحر من مختلف المنصات وتوصلها للمستقل لحظة بلحظة.\n\n"
+    f"{SEP}\n\n"
+    "📌 *الإصدار:* 1.0.0\n"
+    "📬 *للتواصل:* استخدم قسم تواصل معنا\n"
+    f"{SEP}"
 )
 
 ABOUT_EN = (
-    "👤 *About the Developer*\n\n"
-    "Hello! I'm the developer behind *Aistiqrar* platform 👋\n\n"
+    f"{SEP}\n"
+    "⚡ *Aistiqrar Platform*\n"
+    f"{SEP}\n\n"
+    "👤 *About the Developer:*\n"
+    f"{SEP2}\n"
+    "A developer specialized in building smart tools that serve Arab freelancers, saving them time and effort.\n\n"
+    f"{SEP}\n\n"
     "🎯 *Mission:*\n"
-    "Helping Arab freelancers find real job opportunities automatically and directly.\n\n"
+    f"{SEP2}\n"
+    "Helping Arab freelancers find real job opportunities automatically and directly on their phones — no manual searching needed.\n\n"
+    f"{SEP}\n\n"
     "🛠️ *Tech Stack:*\n"
+    f"{SEP2}\n"
     "• Python & Aiogram v3\n"
     "• FastAPI & SQLite\n"
-    "• Web Scraping & Real-time Monitoring\n\n"
+    "• Web Scraping & Real-time Monitoring\n"
+    "• Async Task Management\n\n"
+    f"{SEP}\n\n"
     "💡 *Vision:*\n"
-    "Build a smart tool that aggregates freelance opportunities and delivers them directly to your phone.\n\n"
-    "📬 For inquiries, use the *Contact Us* section."
+    f"{SEP2}\n"
+    "Build an integrated smart system that aggregates freelance opportunities from various platforms and delivers them in real-time.\n\n"
+    f"{SEP}\n\n"
+    "📌 *Version:* 1.0.0\n"
+    "📬 *Contact:* Use the Contact Us section\n"
+    f"{SEP}"
 )
 
 
