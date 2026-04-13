@@ -30,25 +30,52 @@ def _project_keyboard(project: dict, lang: str) -> InlineKeyboardMarkup:
     ])
 
 
+MAX_MSG_LEN = 4000
+
+
 def _format_project(p: dict, lang: str) -> str:
     title     = p.get("title", "—")
     brief     = p.get("brief", "—")
     time_rel  = p.get("time", "—").strip()
+    timestamp = p.get("timestamp", "")
 
     if lang == "ar":
-        return (
+        text = (
             f"🚀 *مشروع جديد*\n\n"
             f"📌 *{title}*\n"
-            f"⏰ النشر: {time_rel}\n\n"
+            f"⏰ النشر: {time_rel}\n"
+            f"🕐 {timestamp}\n\n"
             f"📝 *الوصف:*\n{brief}"
         )
     else:
-        return (
+        text = (
             f"🚀 *New Project*\n\n"
             f"📌 *{title}*\n"
-            f"⏰ Posted: {time_rel}\n\n"
+            f"⏰ Posted: {time_rel}\n"
+            f"🕐 {timestamp}\n\n"
             f"📝 *Description:*\n{brief}"
         )
+
+    if len(text) > MAX_MSG_LEN:
+        overflow = len(text) - MAX_MSG_LEN + 3
+        brief = brief[:-overflow] + "..."
+        if lang == "ar":
+            text = (
+                f"🚀 *مشروع جديد*\n\n"
+                f"📌 *{title}*\n"
+                f"⏰ النشر: {time_rel}\n"
+                f"🕐 {timestamp}\n\n"
+                f"📝 *الوصف:*\n{brief}"
+            )
+        else:
+            text = (
+                f"🚀 *New Project*\n\n"
+                f"📌 *{title}*\n"
+                f"⏰ Posted: {time_rel}\n"
+                f"🕐 {timestamp}\n\n"
+                f"📝 *Description:*\n{brief}"
+            )
+    return text
 
 
 @router.callback_query(F.data == "page_job")
