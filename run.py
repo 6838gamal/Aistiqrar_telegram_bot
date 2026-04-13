@@ -9,7 +9,7 @@ from app.bot.bot import bot
 from app.bot.dispatcher import dp
 from app.bot.routers import main_router
 from app.bot.handlers.menu import setup_menu_routers
-from app.database.db import init_db, get_all_users, get_stats
+from app.database.db import init_db, get_all_users, get_stats, init_favorites_table
 from app.services.scraper import fetch_projects
 
 app = FastAPI()
@@ -18,6 +18,7 @@ templates = Jinja2Templates(directory="templates")
 @app.on_event("startup")
 async def startup():
     init_db()
+    init_favorites_table()
     setup_menu_routers(dp)
     dp.include_router(main_router)
     asyncio.create_task(dp.start_polling(bot))

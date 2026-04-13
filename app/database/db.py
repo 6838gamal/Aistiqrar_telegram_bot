@@ -137,6 +137,45 @@ def set_feed_started_at(user_id):
     conn.commit()
     conn.close()
 
+def init_favorites_table():
+    conn = get_conn()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS favorites (
+            id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id   INTEGER NOT NULL,
+            title     TEXT,
+            link      TEXT,
+            saved_at  TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+def add_favorite(user_id: int, title: str, link: str) -> bool:
+    conn = get_conn()
+    existing = conn.execute(
+        "SELECT id FROM favorites WHERE user_id = ? AND link = ?", (user_id, link)
+    ).fetchone()
+    if existing:
+        conn.close()
+        return False
+    conn.execute(
+        "INSERT INTO favorites (user_id, title, link, saved_at) VALUES (?, ?, ?, ?)",
+        (user_id, title, link, datetime.now().isoformat())
+    )
+    conn.commit()
+    conn.close()
+    return True
+
+def get_favorites(user_id: int) -> list:
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT title, link, saved_at FROM favorites WHERE user_id = ? ORDER BY saved_at DESC",
+        (user_id,)
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
 def get_stats():
     conn = get_conn()
     total    = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
