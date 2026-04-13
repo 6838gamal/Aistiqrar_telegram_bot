@@ -1,3 +1,13 @@
 aiogram==3.3.0
 fastapi
 uvicorn
+jinja2
+python-multipart
+aiogram==3.3.0
+fastapi
+jinja2
+python-multipart
+uvicorn
+beautifulsoup4
+lxml
+requests

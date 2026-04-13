@@ -3,11 +3,15 @@ from app.database.storage import get_user
 from app.services.job_service import get_job
 from app.utils.translator import translator
 from app.utils.commands import match_command
+from app.keyboards.menu import back_button
 
 router = Router()
 
 @router.message()
-async def job(message: types.Message):
+async def job_handler(message: types.Message):
+    if not message.text:
+        return
+
     cmd = match_command(message.text)
 
     if cmd != "job":
@@ -16,14 +20,13 @@ async def job(message: types.Message):
     user = get_user(message.from_user.id)
     lang = user["lang"]
 
-    job = get_job()
+    job_data = get_job()
 
-    await message.answer(f"""
-{translator.t("job_title", lang)}
-
-{job['title']}
-💰 {job['price']}
-🌐 {job['platform']}
-
-{translator.t("verified", lang)}
-""")
+    await message.answer(
+        f"{translator.t('job_title', lang)}\n\n"
+        f"📌 {job_data['title']}\n"
+        f"💰 {job_data['price']}\n"
+        f"🌐 {job_data['platform']}\n\n"
+        f"{translator.t('verified', lang)}",
+        reply_markup=back_button(lang)
+    )

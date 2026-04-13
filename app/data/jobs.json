@@ -1,7 +1,245 @@
 [
   {
-    "title": "تصميم بوستات سوشيال ميديا",
+    "id": 1,
+    "title_ar": "تطوير موقع ووردبريس احترافي",
+    "title_en": "Professional WordPress Website",
+    "price": "150$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 0
+  },
+  {
+    "id": 2,
+    "title_ar": "برمجة تطبيق موبايل بـ Flutter",
+    "title_en": "Flutter Mobile App Development",
+    "price": "400$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 0
+  },
+  {
+    "id": 3,
+    "title_ar": "إعداد وتأمين سيرفر VPS",
+    "title_en": "VPS Server Setup & Security",
+    "price": "80$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 0
+  },
+  {
+    "id": 4,
+    "title_ar": "تصميم هوية بصرية كاملة",
+    "title_en": "Complete Brand Identity Design",
+    "price": "200$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 1
+  },
+  {
+    "id": 5,
+    "title_ar": "تصميم واجهات UI/UX لتطبيق",
+    "title_en": "UI/UX Design for Mobile App",
+    "price": "300$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 1
+  },
+  {
+    "id": 6,
+    "title_ar": "تصميم بوستات سوشيال ميديا (30 بوست)",
+    "title_en": "30 Social Media Posts Design",
+    "price": "60$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 1
+  },
+  {
+    "id": 7,
+    "title_ar": "كتابة محتوى SEO لموقع (10 مقالات)",
+    "title_en": "SEO Content Writing (10 Articles)",
+    "price": "100$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 2
+  },
+  {
+    "id": 8,
+    "title_ar": "ترجمة احترافية عربي / إنجليزي",
+    "title_en": "Professional Arabic/English Translation",
     "price": "50$",
-    "platform": "خمسات"
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 2
+  },
+  {
+    "id": 9,
+    "title_ar": "كتابة نصوص إعلانية (Copywriting)",
+    "title_en": "Advertising Copywriting",
+    "price": "120$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 2
+  },
+  {
+    "id": 10,
+    "title_ar": "إدارة حملات إعلانية على فيسبوك",
+    "title_en": "Facebook Ads Campaign Management",
+    "price": "180$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 3
+  },
+  {
+    "id": 11,
+    "title_ar": "إدارة حسابات السوشيال ميديا (شهر)",
+    "title_en": "Social Media Management (1 Month)",
+    "price": "250$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 3
+  },
+  {
+    "id": 12,
+    "title_ar": "تحسين SEO لموقع إلكتروني",
+    "title_en": "Website SEO Optimization",
+    "price": "200$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 3
+  },
+  {
+    "id": 13,
+    "title_ar": "مونتاج فيديو احترافي (5 دقائق)",
+    "title_en": "Professional Video Editing (5 min)",
+    "price": "70$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 4
+  },
+  {
+    "id": 14,
+    "title_ar": "إنتاج ريلز وتيك توك (10 فيديوهات)",
+    "title_en": "Reels & TikTok Production (10 Videos)",
+    "price": "120$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 4
+  },
+  {
+    "id": 15,
+    "title_ar": "تسجيل تعليق صوتي احترافي",
+    "title_en": "Professional Voice Over Recording",
+    "price": "40$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 4
+  },
+  {
+    "id": 16,
+    "title_ar": "إعداد دراسة جدوى لمشروع",
+    "title_en": "Business Feasibility Study",
+    "price": "300$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 5
+  },
+  {
+    "id": 17,
+    "title_ar": "استشارة تجارية واستراتيجية",
+    "title_en": "Business & Strategy Consulting",
+    "price": "150$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 5
+  },
+  {
+    "id": 18,
+    "title_ar": "إعداد خطة عمل احترافية",
+    "title_en": "Professional Business Plan",
+    "price": "220$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 5
+  },
+  {
+    "id": 19,
+    "title_ar": "إدخال بيانات وتنظيم جداول Excel",
+    "title_en": "Data Entry & Excel Organization",
+    "price": "30$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 6
+  },
+  {
+    "id": 20,
+    "title_ar": "مساعدة افتراضية (VA) أسبوعية",
+    "title_en": "Weekly Virtual Assistant (VA)",
+    "price": "80$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 6
+  },
+  {
+    "id": 21,
+    "title_ar": "دعم فني ومتابعة عملاء",
+    "title_en": "Technical Support & Customer Follow-up",
+    "price": "60$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 6
+  },
+  {
+    "id": 22,
+    "title_ar": "بناء نموذج AI باستخدام Python",
+    "title_en": "Build an AI Model with Python",
+    "price": "500$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 7
+  },
+  {
+    "id": 23,
+    "title_ar": "تحليل بيانات وإعداد تقارير (Pandas)",
+    "title_en": "Data Analysis & Reporting (Pandas)",
+    "price": "200$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 7
+  },
+  {
+    "id": 24,
+    "title_ar": "أتمتة مهام باستخدام Python/AI",
+    "title_en": "Task Automation with Python/AI",
+    "price": "180$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 7
+  },
+  {
+    "id": 25,
+    "title_ar": "كوتشينج شخصي لتنظيم الإنتاجية",
+    "title_en": "Personal Productivity Coaching",
+    "price": "90$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 8
+  },
+  {
+    "id": 26,
+    "title_ar": "إعداد نظام تخطيط يومي بـ Notion",
+    "title_en": "Daily Planning System with Notion",
+    "price": "50$",
+    "platform_ar": "خمسات",
+    "platform_en": "Khamsat",
+    "category": 8
+  },
+  {
+    "id": 27,
+    "title_ar": "استشارة شخصية لإدارة الوقت",
+    "title_en": "Personal Time Management Consulting",
+    "price": "70$",
+    "platform_ar": "مستقل",
+    "platform_en": "Mostaql",
+    "category": 8
   }
 ]

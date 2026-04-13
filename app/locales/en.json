@@ -1,13 +1,52 @@
 {
-  "menu_start": "🚀 Start Now",
+  "menu_start": "🚀 Start Working",
   "menu_job": "💼 Today's Job",
   "menu_profile": "📁 My Profile",
   "menu_categories": "🧭 Categories",
-  "menu_suggest": "💡 Suggestion",
+  "menu_suggest": "💡 Suggest",
   "menu_invite": "👥 Invite",
   "menu_help": "❓ Help",
+  "menu_channels": "📡 Our Channels",
+  "menu_settings": "⚙️ Settings",
+  "menu_back": "🔙 Back",
 
-  "start_work": "🔥 Work session started\nFocus 25 minutes",
+  "start_work": "🔥 Work session started\nFocus for 25 minutes",
   "job_title": "💼 Today's Job:",
-  "verified": "✅ Pre-verified"
+  "verified": "✅ Pre-verified",
+
+  "home_text": "🏠 Main Menu:",
+  "welcome": "👋 Welcome to Aistiqrar Platform\n\n💼 We'll help you find real job opportunities\n🚀 Use the menu below",
+  "welcome_referral": "\n\n🎁 You joined via a referral link!",
+
+  "channels_text": "📡 Our Channels\n\nFollow us for more opportunities and updates:\n\n💬 WhatsApp Group:\n{whatsapp}\n\n✈️ Telegram Channel:\n{telegram}",
+
+  "settings_text": "⚙️ Settings\n\n🌐 Current Language: English 🇺🇸\n\nChoose your language:",
+  "settings_text_en": "⚙️ Settings\n\n🌐 Current Language: English 🇺🇸\n\nChoose your language:",
+  "lang_btn_ar": "🇸🇦 العربية",
+  "lang_btn_en": "🇺🇸 English",
+  "lang_btn_back": "🔙 رجوع | Back",
+  "lang_changed_ar": "✅ تم التغيير إلى العربية 🇸🇦\n\n🏠 القائمة الرئيسية:",
+  "lang_changed_en": "✅ Language changed to English 🇺🇸\n\n🏠 Main Menu:",
+
+  "profile_text": "👤 My Profile\n\n🆔 ID: {id}\n👋 Name: {name}\n🌐 Language: English 🇺🇸\n📥 Joined via: {join_type}\n👥 Your Referrals: {referrals}",
+  "join_direct": "Direct ✅",
+  "join_referral": "Referral 🎁",
+
+  "categories_text": "🧭 Choose Your Fields\n\nTap any field to select or deselect it.\nPress Save when done:",
+  "cat_save": "💾 Save Selections",
+  "cat_saved": "✅ Selections saved!",
+  "cat_none_selected": "⚠️ You haven't selected any field yet!",
+  "cat_jobs_header": "🎯 Available opportunities in your fields:",
+  "cat_no_jobs": "⚠️ No opportunities available in the selected fields right now.\nMore will be added soon!",
+
+  "job_counter": "🔢 {current} / {total}",
+  "feed_starting": "🚀 Loading opportunities... they will start arriving one by one!",
+  "feed_completed": "✅ All available opportunities in your fields have been shown!\n\nChange your category selections to explore other fields.",
+  "subscription_required": "⏰ Your free trial has ended (72 hours)\n\nTo continue accessing opportunities and projects, please subscribe to the platform.\n\n📩 Contact us to subscribe and get more opportunities 🚀",
+
+  "suggest_text": "💡 Suggestions\n\nWe value your feedback!\nWrite your suggestion in the next message and we'll receive it directly 📩",
+
+  "invite_text": "👥 Your Referral Link\n\nShare this link with your friends — everyone who joins through it gets registered under your name 🎁\n\n🔗 Your personal link:\n{link}",
+
+  "help_text": "❓ Help & Support\n\n💼 Today's Job\n📁 My Profile & Referrals\n🧭 Job Categories\n👥 Your Referral Link\n📡 Our Channels\n⚙️ Settings\n💡 Suggestion\n🚀 Focus Session\n\n📩 For support: contact admin"
 }
