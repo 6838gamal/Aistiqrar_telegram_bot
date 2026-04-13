@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from app.database.db import get_user
 from app.keyboards.menu import back_button
-from app.services.mostaql_scraper import fetch_projects
+from app.services.scraper import fetch_projects
 from app.utils.translator import translator
 
 router = Router()
@@ -32,7 +32,7 @@ async def page_job(call: CallbackQuery):
         await call.answer()
         return
 
-    header = "🚀 *المشاريع الحية من مستقل*\n\n" if lang == "ar" else "🚀 *Live Projects from Mostaql*\n\n"
+    header = "🚀 *المشاريع الحية*\n\n" if lang == "ar" else "🚀 *Live Projects*\n\n"
 
     lines = []
     for i, p in enumerate(projects[:5], 1):

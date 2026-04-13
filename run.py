@@ -10,7 +10,7 @@ from app.bot.dispatcher import dp
 from app.bot.routers import main_router
 from app.bot.handlers.menu import setup_menu_routers
 from app.database.db import init_db, get_all_users, get_stats
-from app.services.mostaql_scraper import fetch_projects
+from app.services.scraper import fetch_projects
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
