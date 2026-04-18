@@ -53,14 +53,56 @@
         </div>
     </div>
 
+    <!-- Platform scraper stats -->
+    {% if platform_stats %}
+    <div class="row g-4 justify-content-center mb-4">
+        <div class="col-12 text-center">
+            <h5 class="fw-bold mb-3" style="color:#1a1a2e;">🌐 السحاب النشطة</h5>
+        </div>
+        {% set platform_labels = {
+            "mostaql":    {"name": "مستقل",          "icon": "🟢", "color": "#10b981"},
+            "tafdhali":   {"name": "تفذلي",           "icon": "🔵", "color": "#3b82f6"},
+            "kofeel":     {"name": "كفيل",            "icon": "🟣", "color": "#8b5cf6"},
+            "pph":        {"name": "People Per Hour", "icon": "🟠", "color": "#f97316"},
+            "freelancer": {"name": "Freelancer",      "icon": "🔴", "color": "#ef4444"}
+        } %}
+        {% for ps in platform_stats %}
+        {% set pl = platform_labels.get(ps.platform, {"name": ps.platform, "icon": "⚪", "color": "#6b7280"}) %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card stat-card p-3 text-center">
+                <div style="font-size:2rem;">{{ pl.icon }}</div>
+                <div class="fw-bold mt-1" style="color:{{ pl.color }};">{{ pl.name }}</div>
+                <div class="fs-3 fw-bold">{{ ps.total }}</div>
+                <div class="text-muted small">مشروع مخزّن</div>
+                <a href="/projects?platform={{ ps.platform }}"
+                   class="btn btn-sm mt-2 rounded-pill"
+                   style="background:{{ pl.color }}20; color:{{ pl.color }}; border:1px solid {{ pl.color }}40;">
+                    عرض المشاريع
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="row g-4 justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card stat-card p-4 text-center">
                 <i class="fas fa-robot fs-1 mb-3" style="color:#e94560;"></i>
                 <h5 class="fw-bold">بوت تيليجرام</h5>
-                <p class="text-muted">ابدأ بالتفاعل مع البوت مباشرة على تيليجرام</p>
+                <p class="text-muted">ابدأ بالتفاعل مع البوت</p>
                 <a href="/dashboard" class="btn btn-dark rounded-pill px-4">
-                    <i class="fas fa-users me-2"></i>عرض المستخدمين
+                    <i class="fas fa-users me-2"></i>المستخدمون
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card p-4 text-center">
+                <i class="fas fa-database fs-1 mb-3" style="color:#38bdf8;"></i>
+                <h5 class="fw-bold">قاعدة المشاريع</h5>
+                <p class="text-muted">عرض مشاريع جميع المنصات</p>
+                <a href="/projects" class="btn btn-dark rounded-pill px-4">
+                    <i class="fas fa-rocket me-2"></i>المشاريع
                 </a>
             </div>
         </div>

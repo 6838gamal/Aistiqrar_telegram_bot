@@ -1,48 +1,124 @@
 {% extends "base.html" %}
-{% block title %}المشاريع الحية{% endblock %}
+{% block title %}المشاريع — استقرار{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div class="container">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div>
-                <h2 class="fw-bold mb-1"><i class="fas fa-rocket me-2"></i>المشاريع الحية</h2>
-                <p class="opacity-75 mb-0">يتم تحديثها تلقائياً عند كل تحميل</p>
+                <h2 class="fw-bold mb-1"><i class="fas fa-rocket me-2"></i>مشاريع المنصات</h2>
+                <p class="opacity-75 mb-0">مسحوبة تلقائياً من ٥ منصات — تتحدث كل دقيقتين</p>
             </div>
-            <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
-                <i class="fas fa-circle me-1"></i>{{ projects|length }} مشروع
-            </span>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge bg-success rounded-pill px-3 py-2 fs-6">
+                    <i class="fas fa-circle me-1"></i>{{ projects|length }} مشروع
+                </span>
+                <a href="/api/scrape" class="btn btn-sm btn-outline-light rounded-pill"
+                   onclick="this.innerHTML='⏳ جاري...'; return true;">
+                    <i class="fas fa-sync me-1"></i>سحب الآن
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="container pb-5" style="max-width:860px;">
+<div class="container pb-5" style="max-width:960px;">
 
+    {% set platform_labels = {
+        "mostaql":    {"name": "مستقل",          "icon": "🟢", "color": "#10b981"},
+        "tafdhali":   {"name": "تفذلي",           "icon": "🔵", "color": "#3b82f6"},
+        "kofeel":     {"name": "كفيل",            "icon": "🟣", "color": "#8b5cf6"},
+        "pph":        {"name": "People Per Hour", "icon": "🟠", "color": "#f97316"},
+        "freelancer": {"name": "Freelancer",      "icon": "🔴", "color": "#ef4444"}
+    } %}
+
+    <!-- Platform Filter Tabs -->
+    <div class="d-flex gap-2 flex-wrap mb-4 pt-4">
+        <a href="/projects"
+           class="btn btn-sm rounded-pill px-3 {% if selected_platform == 'all' %}btn-dark{% else %}btn-outline-secondary{% %}">
+            🌐 الكل
+            {% for ps in platform_stats %}
+                {% if loop.first %} — {% endif %}
+            {% endfor %}
+        </a>
+        {% for ps in platform_stats %}
+            {% set pl = platform_labels.get(ps.platform, {"name": ps.platform, "icon": "⚪", "color": "#6b7280"}) %}
+            <a href="/projects?platform={{ ps.platform }}"
+               class="btn btn-sm rounded-pill px-3 {% if selected_platform == ps.platform %}btn-dark{% else %}btn-outline-secondary{% %}">
+                {{ pl.icon }} {{ pl.name }}
+                <span class="badge bg-secondary ms-1">{{ ps.total }}</span>
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Platform Stats Row -->
+    {% if platform_stats %}
+    <div class="row g-3 mb-4">
+        {% for ps in platform_stats %}
+        {% set pl = platform_labels.get(ps.platform, {"name": ps.platform, "icon": "⚪", "color": "#6b7280"}) %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card border-0 shadow-sm p-3" style="border-radius:14px;">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="font-size:2rem;">{{ pl.icon }}</div>
+                    <div>
+                        <div class="fw-bold" style="color:{{ pl.color }};">{{ pl.name }}</div>
+                        <div class="text-muted small">{{ ps.total }} مشروع مخزّن</div>
+                        {% if ps.last_scraped %}
+                        <div class="text-muted" style="font-size:11px;">
+                            آخر سحب: {{ ps.last_scraped|string|truncate(16, false, "") }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Projects List -->
     {% if projects %}
         {% for p in projects %}
+        {% set pl = platform_labels.get(p.platform, {"name": p.platform, "icon": "⚪", "color": "#6b7280"}) %}
         <div class="card mb-3 border-0 shadow-sm" style="border-radius:16px; background:#fff;">
             <div class="card-body p-4">
 
-                <div class="fw-bold fs-5 mb-2" style="color:#1a1a2e;">{{ p.title }}</div>
+                <!-- Platform Badge + Title -->
+                <div class="d-flex align-items-start justify-content-between gap-2 mb-2 flex-wrap">
+                    <div class="fw-bold fs-6" style="color:#1a1a2e; flex:1;">
+                        {{ p.title }}
+                    </div>
+                    <span class="badge rounded-pill px-3 py-1 text-white flex-shrink-0"
+                          style="background:{{ pl.color }}; font-size:11px;">
+                        {{ pl.icon }} {{ pl.name }}
+                    </span>
+                </div>
 
-                <p class="text-muted mb-3" style="font-size:14px; line-height:1.7;">
-                    {{ p.brief[:280] }}{% if p.brief|length > 280 %}...{% endif %}
+                <!-- Brief -->
+                {% if p.brief %}
+                <p class="text-muted mb-3" style="font-size:13.5px; line-height:1.7;">
+                    {{ p.brief[:300] }}{% if p.brief|length > 300 %}...{% endif %}
                 </p>
+                {% endif %}
 
+                <!-- Footer -->
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <div class="text-muted" style="font-size:12px;">
-                        <i class="fas fa-clock me-1"></i>{{ p.time }}
-                        <span class="ms-3 me-3">|</span>
-                        <i class="fas fa-calendar-alt me-1"></i>{{ p.timestamp }}
+                    <div class="text-muted d-flex flex-wrap gap-3" style="font-size:12px;">
+                        {% if p.budget %}
+                        <span><i class="fas fa-coins me-1"></i>{{ p.budget }}</span>
+                        {% endif %}
+                        {% if p.time_rel %}
+                        <span><i class="fas fa-clock me-1"></i>{{ p.time_rel }}</span>
+                        {% endif %}
+                        {% if p.posted_at %}
+                        <span><i class="fas fa-calendar-alt me-1"></i>{{ p.posted_at[:16] }}</span>
+                        {% endif %}
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge" style="background:#d1fae5; color:#065f46; border-radius:8px; font-size:11px;">جديد</span>
-                        <a href="{{ p.link }}" target="_blank"
-                           class="btn btn-sm px-3"
-                           style="background:#38bdf8; color:#020617; border-radius:8px; font-size:13px; font-weight:600;">
-                            <i class="fas fa-external-link-alt me-1"></i>فتح المشروع
-                        </a>
-                    </div>
+                    <a href="{{ p.link }}" target="_blank"
+                       class="btn btn-sm px-3"
+                       style="background:{{ pl.color }}; color:#fff; border-radius:8px; font-size:13px; font-weight:600;">
+                        <i class="fas fa-external-link-alt me-1"></i>فتح المشروع
+                    </a>
                 </div>
 
             </div>
@@ -52,8 +128,8 @@
     {% else %}
     <div class="text-center py-5">
         <i class="fas fa-satellite-dish fs-1 text-muted mb-3 d-block"></i>
-        <h5 class="text-muted">لا توجد مشاريع متاحة حالياً</h5>
-        <p class="text-muted">يرجى إعادة تحميل الصفحة بعد قليل</p>
+        <h5 class="text-muted">لا توجد مشاريع بعد</h5>
+        <p class="text-muted">يبدأ السحب التلقائي كل دقيقتين — أو اضغط "سحب الآن" أعلاه</p>
         <a href="/projects" class="btn btn-outline-secondary rounded-pill">
             <i class="fas fa-sync me-1"></i>تحديث
         </a>
