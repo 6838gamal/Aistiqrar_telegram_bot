@@ -10,9 +10,12 @@ from .favorites import router as favorites_router
 from .about import router as about_router
 from .contact import router as contact_router
 from .subscribe import router as subscribe_router
+from app.bot.handlers.profile_setup import router as profile_setup_router
 
 
 def setup_menu_routers(dp):
+    # FSM profile setup must be registered FIRST
+    dp.include_router(profile_setup_router)
     dp.include_router(lang_router)
     dp.include_router(home_router)
     dp.include_router(job_router)
