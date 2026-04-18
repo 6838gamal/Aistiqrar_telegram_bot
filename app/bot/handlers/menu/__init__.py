@@ -9,6 +9,7 @@ from .lang import router as lang_router
 from .favorites import router as favorites_router
 from .about import router as about_router
 from .contact import router as contact_router
+from .subscribe import router as subscribe_router
 
 
 def setup_menu_routers(dp):
@@ -23,3 +24,4 @@ def setup_menu_routers(dp):
     dp.include_router(favorites_router)
     dp.include_router(about_router)
     dp.include_router(contact_router)
+    dp.include_router(subscribe_router)

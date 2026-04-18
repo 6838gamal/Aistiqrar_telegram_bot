@@ -1,8 +1,9 @@
 from aiogram import Router, F
-from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, Message
+from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from app.database.db import get_user, add_favorite
 from app.services.scraper import fetch_projects
 from app.utils.translator import translator
+from app.utils.formatting import SEP, SEP2, format_project
 
 router = Router()
 
@@ -30,54 +31,6 @@ def _project_keyboard(project: dict, lang: str) -> InlineKeyboardMarkup:
     ])
 
 
-MAX_MSG_LEN = 4000
-
-
-def _format_project(p: dict, lang: str) -> str:
-    title     = p.get("title", "—")
-    brief     = p.get("brief", "—")
-    time_rel  = p.get("time", "—").strip()
-    timestamp = p.get("timestamp", "")
-
-    if lang == "ar":
-        text = (
-            f"🚀 *مشروع جديد*\n\n"
-            f"📌 *{title}*\n"
-            f"⏰ النشر: {time_rel}\n"
-            f"🕐 {timestamp}\n\n"
-            f"📝 *الوصف:*\n{brief}"
-        )
-    else:
-        text = (
-            f"🚀 *New Project*\n\n"
-            f"📌 *{title}*\n"
-            f"⏰ Posted: {time_rel}\n"
-            f"🕐 {timestamp}\n\n"
-            f"📝 *Description:*\n{brief}"
-        )
-
-    if len(text) > MAX_MSG_LEN:
-        overflow = len(text) - MAX_MSG_LEN + 3
-        brief = brief[:-overflow] + "..."
-        if lang == "ar":
-            text = (
-                f"🚀 *مشروع جديد*\n\n"
-                f"📌 *{title}*\n"
-                f"⏰ النشر: {time_rel}\n"
-                f"🕐 {timestamp}\n\n"
-                f"📝 *الوصف:*\n{brief}"
-            )
-        else:
-            text = (
-                f"🚀 *New Project*\n\n"
-                f"📌 *{title}*\n"
-                f"⏰ Posted: {time_rel}\n"
-                f"🕐 {timestamp}\n\n"
-                f"📝 *Description:*\n{brief}"
-            )
-    return text
-
-
 @router.callback_query(F.data == "page_job")
 async def page_job(call: CallbackQuery):
     user = get_user(call.from_user.id)
@@ -86,16 +39,25 @@ async def page_job(call: CallbackQuery):
     projects = fetch_projects()
 
     if not projects:
-        no_data = "⚠️ لا توجد مشاريع متاحة حالياً. حاول لاحقاً." if lang == "ar" \
-                  else "⚠️ No projects available right now. Try again later."
-        await call.message.answer(no_data)
+        no_data = (
+            f"{SEP}\n"
+            f"⚠️ *لا توجد مشاريع متاحة*\n"
+            f"{SEP}\n\n"
+            f"لا تتوفر مشاريع حالياً، يرجى المحاولة لاحقاً."
+        ) if lang == "ar" else (
+            f"{SEP}\n"
+            f"⚠️ *No Projects Available*\n"
+            f"{SEP}\n\n"
+            f"No projects available right now. Please try again later."
+        )
+        await call.message.answer(no_data, parse_mode="Markdown")
         await call.answer()
         return
 
     await call.message.delete()
 
     for p in projects:
-        text = _format_project(p, lang)
+        text = format_project(p, lang)
         kb   = _project_keyboard(p, lang)
         await call.message.answer(text, reply_markup=kb, parse_mode="Markdown")
 
@@ -119,10 +81,10 @@ async def save_favorite(call: CallbackQuery):
     added = add_favorite(call.from_user.id, project["title"], project["link"])
 
     if added:
-        msg = f"⭐ تمت الإضافة إلى المفضلة:\n📌 {project['title']}" if lang == "ar" \
-              else f"⭐ Added to favorites:\n📌 {project['title']}"
+        msg = f"⭐ تمت الإضافة!\n📌 {project['title'][:50]}" if lang == "ar" \
+              else f"⭐ Added to favorites!\n📌 {project['title'][:50]}"
     else:
-        msg = "✅ هذا المشروع موجود بالفعل في مفضلتك." if lang == "ar" \
-              else "✅ This project is already in your favorites."
+        msg = "✅ المشروع موجود بالفعل في مفضلتك." if lang == "ar" \
+              else "✅ Already in your favorites."
 
     await call.answer(msg, show_alert=True)

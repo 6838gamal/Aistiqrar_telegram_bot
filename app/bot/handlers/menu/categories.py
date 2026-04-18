@@ -8,20 +8,19 @@ from app.database.db import (
 )
 from app.keyboards.menu import home_menu
 from app.keyboards.categories import categories_keyboard
-from app.services.scraper import fetch_projects, filter_by_categories
+from app.services.scraper import fetch_projects
 from app.utils.translator import translator
+from app.utils.formatting import SEP, SEP2, format_project
 from app.data.categories import CATEGORIES
 
 router = Router()
 
 TRIAL_HOURS   = 72
-MONITOR_DELAY = 30      # seconds between each check
-SEND_DELAY    = 0.5     # seconds between sending each project
-MAX_MSG_LEN   = 4000    # Telegram limit is 4096
+MONITOR_DELAY = 30
+SEND_DELAY    = 0.5
 
-# in-memory per-user state
-_user_monitors: dict[int, bool]      = {}
-_user_seen:     dict[int, set[str]]  = {}
+_user_monitors: dict[int, bool]     = {}
+_user_seen:     dict[int, set[str]] = {}
 
 
 def _is_trial_expired(feed_started_at: str) -> bool:
@@ -54,62 +53,63 @@ def _project_keyboard(project: dict, lang: str) -> InlineKeyboardMarkup:
     ])
 
 
-def _format_project(p: dict, lang: str) -> str:
-    title    = p.get("title", "—")
-    brief    = p.get("brief", "—")
-    time_rel = p.get("time", "—").strip()
-    timestamp = p.get("timestamp", "")
-
+def _subscription_keyboard(lang: str) -> InlineKeyboardMarkup:
     if lang == "ar":
-        text = (
-            f"🚀 *مشروع جديد*\n\n"
-            f"📌 *{title}*\n"
-            f"⏰ النشر: {time_rel}\n"
-            f"🕐 {timestamp}\n\n"
-            f"📝 *الوصف:*\n{brief}"
+        return InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="💎 اشترك الآن",     callback_data="page_subscribe")],
+            [InlineKeyboardButton(text="📞 تواصل معنا",     callback_data="page_contact")],
+        ])
+    else:
+        return InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="💎 Subscribe Now",  callback_data="page_subscribe")],
+            [InlineKeyboardButton(text="📞 Contact Us",     callback_data="page_contact")],
+        ])
+
+
+def _subscription_expired_text(lang: str) -> str:
+    if lang == "ar":
+        return (
+            f"{SEP}\n"
+            f"⏰ *انتهت فترة التجربة المجانية*\n"
+            f"{SEP}\n\n"
+            f"📅 مدة التجربة: 72 ساعة مجاناً\n\n"
+            f"{SEP2}\n\n"
+            f"للاستمرار في الوصول إلى المشاريع والمراقبة المستمرة، يرجى تفعيل الاشتراك.\n\n"
+            f"💳 *طرق الدفع المتاحة:*\n"
+            f"• 🟡 Binance Pay\n"
+            f"• 💵 صرافة كريمي\n"
+            f"• 📱 تطبيقات الصرافة الأخرى\n\n"
+            f"{SEP2}\n\n"
+            f"اضغط *اشترك الآن* للاطلاع على التفاصيل كاملة 👇\n"
+            f"{SEP}"
         )
     else:
-        text = (
-            f"🚀 *New Project*\n\n"
-            f"📌 *{title}*\n"
-            f"⏰ Posted: {time_rel}\n"
-            f"🕐 {timestamp}\n\n"
-            f"📝 *Description:*\n{brief}"
+        return (
+            f"{SEP}\n"
+            f"⏰ *Free Trial Ended*\n"
+            f"{SEP}\n\n"
+            f"📅 Trial duration: 72 hours free\n\n"
+            f"{SEP2}\n\n"
+            f"To continue accessing projects and monitoring, please activate your subscription.\n\n"
+            f"💳 *Available Payment Methods:*\n"
+            f"• 🟡 Binance Pay\n"
+            f"• 💵 Karimi Exchange\n"
+            f"• 📱 Other Exchange Apps\n\n"
+            f"{SEP2}\n\n"
+            f"Tap *Subscribe Now* for full details 👇\n"
+            f"{SEP}"
         )
-
-    # respect Telegram's message length limit
-    if len(text) > MAX_MSG_LEN:
-        overflow = len(text) - MAX_MSG_LEN + 3
-        brief = brief[:-overflow] + "..."
-        if lang == "ar":
-            text = (
-                f"🚀 *مشروع جديد*\n\n"
-                f"📌 *{title}*\n"
-                f"⏰ النشر: {time_rel}\n"
-                f"🕐 {timestamp}\n\n"
-                f"📝 *الوصف:*\n{brief}"
-            )
-        else:
-            text = (
-                f"🚀 *New Project*\n\n"
-                f"📌 *{title}*\n"
-                f"⏰ Posted: {time_rel}\n"
-                f"🕐 {timestamp}\n\n"
-                f"📝 *Description:*\n{brief}"
-            )
-    return text
 
 
 async def _send_projects(bot: Bot, user_id: int, lang: str, projects: list):
     for p in projects:
-        text = _format_project(p, lang)
+        text = format_project(p, lang)
         kb   = _project_keyboard(p, lang)
         await bot.send_message(user_id, text, reply_markup=kb, parse_mode="Markdown")
         await asyncio.sleep(SEND_DELAY)
 
 
 async def _monitor_loop(bot: Bot, user_id: int, lang: str, feed_started: str):
-    # ── first run: send all current projects ──────────────────────────
     all_projects = fetch_projects()
     if all_projects:
         await _send_projects(bot, user_id, lang, all_projects)
@@ -117,24 +117,24 @@ async def _monitor_loop(bot: Bot, user_id: int, lang: str, feed_started: str):
     else:
         _user_seen.setdefault(user_id, set())
 
-    # ── continuous monitoring loop ────────────────────────────────────
     while _user_monitors.get(user_id):
         await asyncio.sleep(MONITOR_DELAY)
 
         if not _user_monitors.get(user_id):
             break
 
-        # trial check
         if _is_trial_expired(feed_started):
-            await bot.send_message(user_id, translator.t("subscription_required", lang))
+            await bot.send_message(
+                user_id,
+                _subscription_expired_text(lang),
+                reply_markup=_subscription_keyboard(lang),
+                parse_mode="Markdown"
+            )
             _user_monitors[user_id] = False
             return
 
-        # send "fetching" status
-        if lang == "ar":
-            status_msg = await bot.send_message(user_id, "🔄 جاري السحب...")
-        else:
-            status_msg = await bot.send_message(user_id, "🔄 Fetching new projects...")
+        status_label = "🔄 جاري السحب..." if lang == "ar" else "🔄 Fetching new projects..."
+        status_msg = await bot.send_message(user_id, status_label)
 
         try:
             fresh_projects = fetch_projects()
@@ -142,17 +142,15 @@ async def _monitor_loop(bot: Bot, user_id: int, lang: str, feed_started: str):
             new_projects   = [p for p in fresh_projects if p.get("id") and p["id"] not in seen]
 
             if new_projects:
-                # delete status then send new projects
                 await status_msg.delete()
                 for p in new_projects:
                     seen.add(p["id"])
-                    text = _format_project(p, lang)
+                    text = format_project(p, lang)
                     kb   = _project_keyboard(p, lang)
                     await bot.send_message(user_id, text, reply_markup=kb, parse_mode="Markdown")
                     await asyncio.sleep(SEND_DELAY)
                 _user_seen[user_id] = seen
             else:
-                # no new projects — delete status silently and keep watching
                 await status_msg.delete()
 
         except Exception:
@@ -161,8 +159,6 @@ async def _monitor_loop(bot: Bot, user_id: int, lang: str, feed_started: str):
             except Exception:
                 pass
 
-
-# ── Aiogram handlers ──────────────────────────────────────────────────
 
 @router.callback_query(F.data == "page_categories")
 async def page_categories(call: CallbackQuery):
@@ -210,19 +206,29 @@ async def save_categories(call: CallbackQuery):
 
     if _is_trial_expired(feed_started):
         await call.answer()
-        await call.message.edit_text(translator.t("subscription_required", lang), reply_markup=None)
-        await call.message.answer(translator.t("home_text", lang), reply_markup=home_menu(lang))
+        await call.message.edit_text(
+            _subscription_expired_text(lang),
+            reply_markup=_subscription_keyboard(lang),
+            parse_mode="Markdown"
+        )
         return
 
     await call.answer(translator.t("cat_saved", lang))
-    await call.message.edit_text(translator.t("feed_starting", lang), reply_markup=None)
+
+    start_label = (
+        f"{SEP}\n🚀 *جاري تحميل الفرص وبدء المراقبة...*\n{SEP}\n\n"
+        f"⏳ سيصلك كل مشروع جديد فور نشره تلقائياً."
+    ) if lang == "ar" else (
+        f"{SEP}\n🚀 *Loading projects and starting monitoring...*\n{SEP}\n\n"
+        f"⏳ Every new project will be sent to you automatically."
+    )
+
+    await call.message.edit_text(start_label, reply_markup=None, parse_mode="Markdown")
     await call.message.answer(translator.t("home_text", lang), reply_markup=home_menu(lang))
 
-    # stop any existing monitor for this user
     _user_monitors[call.from_user.id] = False
     await asyncio.sleep(0.1)
 
-    # start new monitor
     _user_monitors[call.from_user.id] = True
     asyncio.create_task(
         _monitor_loop(call.bot, call.from_user.id, lang, feed_started)

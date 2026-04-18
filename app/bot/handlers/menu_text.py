@@ -8,6 +8,7 @@ from app.utils.commands import match_command
 from app.config import WHATSAPP_LINK, TELEGRAM_CHANNEL, INSTAGRAM_LINK, MESSENGER_LINK, CONTACT_EMAIL
 from app.bot.handlers.menu.about import ABOUT_AR, ABOUT_EN
 from app.bot.handlers.menu.contact import contact_keyboard
+from app.bot.handlers.menu.subscribe import build_subscribe_text, subscribe_keyboard
 
 router = Router()
 
@@ -140,3 +141,7 @@ async def text_handler(message: types.Message):
             "📞 *Contact Us*\n\nWe're here to help! Choose your preferred contact method:"
         )
         await message.answer(text_out, reply_markup=contact_keyboard(lang), parse_mode="Markdown")
+
+    elif cmd == "subscribe":
+        text_out = build_subscribe_text(lang)
+        await message.answer(text_out, reply_markup=subscribe_keyboard(lang), parse_mode="Markdown")

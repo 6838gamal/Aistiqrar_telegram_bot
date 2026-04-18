@@ -14,6 +14,7 @@ COMMANDS = {
     "favorites":  ["favorites", "المفضلة", "مفضلة", "⭐"],
     "about":      ["about", "عن المطور", "عنا", "👤"],
     "contact":    ["contact", "تواصل", "تواصل معنا", "📞"],
+    "subscribe":  ["subscribe", "اشترك", "اشتراك", "💎"],
 }
 
 def match_command(text: str):
